@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+{#================================#}
+{% block title %}Profile :: Smart Home{% endblock title %}
+{% block body %}
+    <div class="main">
+        <script type="application/x-javascript"> addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        } </script>
+        <!-- //for-mobile-apps -->
+        <link href="{% static 'css/profile.css' %}" rel="stylesheet" type="text/css" media="all"/>
+        <link href='//fonts.googleapis.com/css?family=Lato:400,100,100italic,300italic,300,400italic,700,700italic,900,900italic'
+              rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+
+        <div class="sap_tabs">
+            <div id="horizontalTab" style="display: block; width: 100%; margin: 0px;">
+                <script src="{% static 'js/easyResponsiveTabs.js' %}" type="text/javascript"></script>
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        $('#horizontalTab').easyResponsiveTabs({
+                            type: 'default', //Types: default, vertical, accordion
+                            width: 'auto', //auto or any width like 600px
+                            fit: true,   // 100% fit in a container
+                            closed: 'accordion', // Start closed if in accordion view
+                            activate: function (event) { // Callback function if tab is switched
+                                var $tab = $(this);
+                                var $info = $('#tabInfo');
+                                var $name = $('span', $info);
+                                $name.text($tab.text());
+                                $info.show();
+                            }
+                        });
+
+                        $('#verticalTab').easyResponsiveTabs({
+                            type: 'vertical',
+                            width: 'auto',
+                            fit: true
+                        });
+                    });
+                </script>
+                <div class="portfolio-grid">
+                    <div class="port-left">
+                        <ul class="resp-tabs-list">
+                            <li class="resp-tab-item" aria-controls="tab_item-0" role="tab">
+                                <span>Basic Details</span></li>
+                            {% if user.is_staff == 0 and user.is_superuser == 0 %}
+                                <li class="resp-tab-item" aria-controls="tab_item-1" role="tab">
+                                    <span>User Information</span>
+                                </li>
+                            {% endif %}
+                            {% if user.is_staff == 1 %}
+                                <li class="resp-tab-item" aria-controls="tab_item-2" role="tab"><span>Manufacturer Information</span>
+                                </li>
+                            {% endif %}
+                            <div class="clear"></div>
+                        </ul>
+                    </div>
+                    <div class="port-right">
+                        <div class="resp-tabs-container">
+                            <form action="{% url 'user:profileBasic' %}" id="basic_form" method="post">
+                                {% csrf_token %}
+                                <div class="tab-1 resp-tab-content" aria-labelledby="tab_item-0">
+                                    <div class="profile-content">
+                                        <h3>User Name</h3>
+                                        <div class="email-group">
+                                            <div class="cell-icon"><span></span></div>
+                                            <div class="email-form">
+                                                <input type="text" class="fb-ico" value="{{ user.username }}"
+                                                       onfocus="this.value = '';"
+                                                       onblur="if (this.value == '') {this.value = '{{ user.username }}';}"
+                                                       name="name">
+                                            </div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <h3>Email</h3>
+                                        <div class="email-group">
+                                            <div class="email-icon"><span></span></div>
+                                            <div class="email-form">
+                                                <input type="text" class="fb-ico" value="{{ user.email }}"
+                                                       onfocus="this.value = '';"
+                                                       onblur="if (this.value == '') {this.value = '{{ user.email }}';}"
+                                                       name="email">
+                                            </div>
+                                            <div class="clear"></div>
+                                        </div>
+                                    </div>
+                                    <div class="update">
+                                        <a onclick="document:basic_form.submit()">Update</a>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                            </form>
+                            {% if user.is_staff == 0 and user.is_superuser == 0 %}
+                                <form action="{% url 'user:profileUser' %}" id="user_form" method="post">
+                                    {% csrf_token %}
+                                    <div class="tab-1 resp-tab-content" aria-labelledby="tab_item-1">
+                                        <div class="work-play">
+                                            <h4>Gender</h4>
+                                            <div class="radio-btns">
+                                                {% if user_info.gender == 0 %}
+                                                    <div class="swit">
+                                                        <div class="check_box">
+                                                            <div class="radio"><label><input type="radio" name="gender"
+                                                                                             value="1"><i></i><img
+                                                                    src="{% static 'images/man.png' %}"
+                                                                    alt=" "/></label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="check_box">
+                                                            <div class="radio2"><label><input type="radio"
+                                                                                              name="gender"
+                                                                                              value="0"
+                                                                                              checked><i></i><img
+                                                                    src="{% static 'images/woman.png' %}"
+                                                                    alt=" "/></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="swit">
+                                                        <div class="check_box">
+                                                            <div class="radio"><label><input type="radio" name="gender"
+                                                                                             value="1"
+                                                                                             checked><i></i><img
+                                                                    src="{% static 'images/man.png' %}"
+                                                                    alt=" "/></label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="check_box">
+                                                            <div class="radio2"><label><input type="radio"
+                                                                                              name="gender"
+                                                                                              value="0"><i></i><img
+                                                                    src="{% static 'images/woman.png' %}"
+                                                                    alt=" "/></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                                <div class="clear"></div>
+                                            </div>
+                                            <h4>Phone</h4>
+                                            <input name="phone" type="text" value="{{ user_info.phone }}"
+                                                   onfocus="this.value = '';"
+                                                   onblur="if (this.value == '') {this.value = '{{ user_info.phone }}';}">
+                                            <h4>Family ID</h4>
+                                            <input name="family_id" type="text" value="{{ user_info.family_id }}"
+                                                   onfocus="this.value = '';"
+                                                   onblur="if (this.value == '') {this.value = '{{ user_info.family_id }}';}">
+                                        </div>
+                                        <div class="update">
+                                            <a onclick="document:user_form.submit()">Update</a>
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </form>
+                            {% endif %}
+                            {% if user.is_staff == 1 %}
+                                <form action="{% url 'user:profileManu' %}" id="manu_form" method="post">
+                                    <div class="tab-1 resp-tab-content" aria-labelledby="tab_item-2">
+                                        <div class="work-play">
+                                            <h4>Phone</h4>
+                                            {% csrf_token %}
+                                            <input name="phone" type="text" value="{{ manu_info.phone }}"
+                                                   onfocus="this.value = '';"
+                                                   onblur="if (this.value == '') {this.value = '{{ manu_info.phone }}';}">
+
+                                            <h4>City</h4>
+                                            <input name="city" type="text" value="{{ manu_info.city }}"
+                                                   onfocus="this.value = '';"
+                                                   onblur="if (this.value == '') {this.value = '{{ manu_info.city }}';}">
+                                            <h4>Address</h4>
+                                            <input name="address" type="text" value="{{ manu_info.address }}"
+                                                   onfocus="this.value = '';"
+                                                   onblur="if (this.value == '') {this.value = '{{ manu_info.address }}';}">
+                                        </div>
+                                        <div class="update">
+                                            <a onclick="document:manu_form.submit()">Update</a>
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock body %}

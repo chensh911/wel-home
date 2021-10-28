@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+{#================================#}
+{% block title %}Contract Charts :: Smart Home{% endblock title %}
+{% block chart %}class="active"{% endblock chart %}
+{% block body %}
+    <script src="{% static 'js/echarts.min.js' %}"></script>
+    <div class="table-agile-info">
+        <div id="info">
+            <form class="form-inline" method="post">
+                {% csrf_token %}
+                <div class="form-group" style="display: inline-block">
+                    <label for="exampleInputName1">Visualize By Device Id1: </label>
+                    <input name="id1" type="number" class="form-control" id="exampleInputName1" style="height: 30px">
+                </div>
+                <div class="form-group" style="display: inline-block">
+                    <label for="exampleInputName2">Device Id 2: </label>
+                    <input name="id2" type="number" class="form-control" id="exampleInputName2" style="height: 30px">
+                </div>
+                <button type="submit" class="btn btn-default">Generate Visualization</button>
+            </form>
+            <blockquote>If input is blank, then we will show data from all device!</blockquote>
+        </div>
+        <div>
+            <div id="humidity" style="height: 400px"></div>
+            <div id="temperature" style="height: 400px"></div>
+            <script type="text/javascript">
+                var chartDom = document.getElementById('humidity');
+                var myChart = echarts.init(chartDom);
+                var option;
+
+                option = {
+                    title: {
+                        text: "The Distribution of Humidity"
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            crossStyle: {
+                                color: '#999'
+                            }
+                        }
+                    },
+                    toolbox: {
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    legend: {
+                        data: ['Device {{ id1 }}', 'Device {{ id2 }}', 'Average']
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            data: ['[-∞,40]', '(40,50]', '(50,60]', '(60,+∞]'],
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            name: 'Device {{ id1 }} Humidity',
+                            axisLabel: {
+                                formatter: '{value}'
+                            }
+                        },
+                        {
+                            type: 'value',
+                            name: 'Device {{ id2 }} Humidity',
+                            axisLabel: {
+                                formatter: '{value}'
+                            }
+                        }
+                    ],
+                    series: [
+                        {
+                            name: 'Device {{ id1 }}',
+                            type: 'bar',
+                            data: [{{ one1h }}, {{ two1h }}, {{ three1h }}, {{ four1h }}]
+                        },
+                        {
+                            name: 'Device {{ id2 }}',
+                            type: 'bar',
+                            data: [{{ one2h }}, {{ two2h }}, {{ three2h }}, {{ four2h }}]
+                        },
+                        {
+                            name: 'Average',
+                            type: 'line',
+                            yAxisIndex: 1,
+                            data: [{% widthratio one1h|add:one2h 2 1 %}, {% widthratio two1h|add:two2h 2 1 %}, {% widthratio three1h|add:three2h 2 1 %}, {% widthratio four1h|add:four2h 2 1 %}]
+                        }
+                    ]
+                };
+
+                option && myChart.setOption(option);
+            </script>
+            <script type="text/javascript">
+                var chartDom = document.getElementById('temperature');
+                var myChart = echarts.init(chartDom);
+                var option;
+
+                option = {
+                    title: {
+                        text: "The Distribution of Temperature"
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            crossStyle: {
+                                color: '#999'
+                            }
+                        }
+                    },
+                    toolbox: {
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    legend: {
+                        data: ['Device {{ id1 }}', 'Device {{ id2 }}', 'Average']
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            data: ['[-∞,15]', '(15,20]', '(20,25]', '(30,+∞]'],
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            name: 'Device {{ id1 }} Temperature',
+                            axisLabel: {
+                                formatter: '{value}'
+                            }
+                        },
+                        {
+                            type: 'value',
+                            name: 'Device {{ id2 }} Temperature',
+                            axisLabel: {
+                                formatter: '{value}'
+                            }
+                        }
+                    ],
+                    series: [
+                        {
+                            name: 'Device {{ id1 }}',
+                            type: 'bar',
+                            data: [{{ one1t }}, {{ two1t }}, {{ three1t }}, {{ four1t }}]
+                        },
+                        {
+                            name: 'Device {{ id2 }}',
+                            type: 'bar',
+                            data: [{{ one2t }}, {{ two2t }}, {{ three2t }}, {{ four2t }}]
+                        },
+                        {
+                            name: 'Average',
+                            type: 'line',
+                            yAxisIndex: 1,
+                            data: [{% widthratio one1t|add:one2t 2 1 %}, {% widthratio two1t|add:two2t 2 1 %}, {% widthratio three1t|add:three2t 2 1 %}, {% widthratio four1t|add:four2t 2 1 %}]
+                        }
+                    ]
+                };
+
+                option && myChart.setOption(option);
+            </script>
+        </div>
+    </div>
+{% endblock body %}

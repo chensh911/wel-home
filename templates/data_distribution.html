@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+{#================================#}
+{% block title %}Distribution Charts :: Smart Home{% endblock title %}
+{% block chart %}class="active"{% endblock chart %}
+{% block body %}
+    <script src="{% static 'js/echarts.min.js' %}"></script>
+    <div class="table-agile-info">
+        <div id="info">
+            <form class="form-inline" method="post">
+                {% csrf_token %}
+                <div class="form-group" style="display: inline-block">
+                    <label for="exampleInputName1">Type: </label>
+                    <select name="type" id="type" class="form-control">
+                        <option>temperature</option>
+                        <option>humidity</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display: inline-block">
+                    <label for="exampleInputName1">Visualize By Device Id: </label>
+                    <input name="id" type="number" class="form-control" id="exampleInputName1" style="height: 30px">
+                </div>
+                <button type="submit" class="btn btn-default">Generate Visualization</button>
+            </form>
+            <blockquote>If input is blank, then we will show data from all device!</blockquote>
+        </div>
+        <div>
+            <div id="acontainer" style="height: 400px"></div>
+            <script type="text/javascript">
+                var dom = document.getElementById("acontainer");
+                var myChart = echarts.init(dom);
+                var app = {};
+
+                var option;
+                option = {
+                    title: {
+                        text: "The Distribution of {{ type }}"
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'none'
+                        },
+                        formatter: function (params) {
+                            return params[0].name + ': ' + params[0].value;
+                        }
+                    },
+                    xAxis: {
+                        {% if type == 'temperature' %}
+                            data: ['[-∞,15]', '(15,20]', '(20,25]', '(30,+∞]'],
+                        {% else %}
+                            data: ['[-∞,40]', '(40,50]', '(50,60]', '(60,+∞]'],
+                        {% endif %}
+                        axisTick: {
+                            show: false
+                        }
+                        ,
+                        axisLine: {
+                            show: false
+                        }
+                        ,
+                        axisLabel: {
+                            color: '#e54035'
+                        }
+                    },
+                    yAxis: {
+                        splitLine: {
+                            show: false
+                        }
+                        ,
+                        axisTick: {
+                            show: false
+                        }
+                        ,
+                        axisLine: {
+                            show: false
+                        }
+                        ,
+                        axisLabel: {
+                            show: false
+                        }
+                    }
+                    ,
+                    color: ['#e54035'],
+                    series
+                :
+                [{
+                    name: 'hill',
+                    type: 'pictorialBar',
+                    barCategoryGap: '-130%',
+                    // symbol: 'path://M0,10 L10,10 L5,0 L0,10 z',
+                    symbol: 'path://M0,10 L10,10 C5.5,10 5.5,5 5,0 C4.5,5 4.5,10 0,10 z',
+                    itemStyle: {
+                        opacity: 0.5
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            opacity: 1
+                        }
+                    },
+                    data: [{{ one }}, {{ two }}, {{ three }}, {{ four }}],
+                    z: 10
+                }]
+                }
+                ;
+
+                if (option && typeof option === 'object') {
+                    myChart.setOption(option);
+                }
+
+            </script>
+        </div>
+    </div>
+{% endblock body %}

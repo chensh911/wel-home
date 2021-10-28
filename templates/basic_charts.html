@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+{#================================#}
+{% block title %}Basic Charts :: Smart Home{% endblock title %}
+{% block chart %}class="active"{% endblock chart %}
+{% block body %}
+    <script src="{% static 'js/echarts.min.js' %}"></script>
+    <div class="table-agile-info">
+        <div id="v1" style="width: 800px;height:500px;"></div>
+        <div id="v2" style="width: 800px;height:500px;"></div>
+        <div id="v3" style="width: 800px;height:500px;"></div>
+    </div>
+
+    <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('v1'));
+        var option = {
+            title: {
+                text: "All the family's average temperature distribution"
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                top: '5%',
+                left: 'center'
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '40',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [
+                        {value: 1, name: 'below 0℃'},
+                        {value: 2, name: 'between 0℃ and 10℃'},
+                        {value: 6, name: 'between 10℃ and 20℃'},
+                        {value: 37, name: 'between 20℃ and 30℃'},
+                        {value: 10, name: 'between 30℃ and 40℃'}
+                    ]
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+    <script type="text/javascript">
+        var chartDom = document.getElementById('v2');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        var dataAxis = ['18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00'];
+        var data = [30.00, 57.69, 72.34, 88.62, 95.43, 97.78, 85.85, 42.50, 33.75, 18.46, 2.39, 1.10, 0.59];
+        var yMax = 500;
+        var dataShadow = [];
+
+        for (var i = 0; i < data.length; i++) {
+            dataShadow.push(yMax);
+        }
+
+        option = {
+            title: {
+                text: 'The average lightness of all families from 18PM to 6AM',
+                subtext: 'Each hour in a gruop'
+            },
+            xAxis: {
+                data: dataAxis,
+                axisLabel: {
+                    inside: true,
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLine: {
+                    show: false
+                },
+                z: 10
+            },
+            yAxis: {
+                axisLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            dataZoom: [
+                {
+                    type: 'inside'
+                }
+            ],
+            series: [
+                {
+                    type: 'bar',
+                    showBackground: true,
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: '#83bff6'},
+                                {offset: 0.5, color: '#188df0'},
+                                {offset: 1, color: '#188df0'}
+                            ]
+                        )
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    {offset: 0, color: '#2378f7'},
+                                    {offset: 0.7, color: '#2378f7'},
+                                    {offset: 1, color: '#83bff6'}
+                                ]
+                            )
+                        }
+                    },
+                    data: data
+                }
+            ]
+        };
+
+        // Enable data zoom when user click bar.
+        var zoomSize = 6;
+        myChart.on('click', function (params) {
+            console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)]);
+            myChart.dispatchAction({
+                type: 'dataZoom',
+                startValue: dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)],
+                endValue: dataAxis[Math.min(params.dataIndex + zoomSize / 2, data.length - 1)]
+            });
+        });
+        option && myChart.setOption(option);
+    </script>
+    <script type="text/javascript">
+        var chartDom = document.getElementById('v3');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        option = {
+            backgroundColor: '#2c343c',
+            title: {
+                text: 'The distribution of the times of doors and Windows open in a single day',
+                subtext: 'When the Angle is greater than 30° is regarded as open',
+                left: 'center',
+                top: 20,
+                textStyle: {
+                    color: '#ccc'
+                }
+            },
+
+            tooltip: {
+                trigger: 'item'
+            },
+
+            visualMap: {
+                show: false,
+                min: 0,
+                max: 30,
+                inRange: {
+                    colorLightness: [0.5, 1]
+                }
+            },
+            series: [
+                {
+                    name: 'Times',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '47%'],
+                    data: [
+                        {value: 2, name: 'below 5'},
+                        {value: 10, name: 'between 6 and 10'},
+                        {value: 15, name: 'between 11 and 15'},
+                        {value: 7, name: 'between 16 and 20'},
+                        {value: 4, name: 'more than 30'}
+                    ].sort(function (a, b) {
+                        return a.value - b.value;
+                    }),
+                    roseType: 'radius',
+                    label: {
+                        color: 'rgba(255, 255, 255, 0.6)'
+                    },
+                    labelLine: {
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.6)'
+                        },
+                        smooth: 0.2,
+                        length: 10,
+                        length2: 20
+                    },
+                    itemStyle: {
+                        color: '#c23531',
+                        shadowBlur: 200,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    },
+
+                    animationType: 'scale',
+                    animationEasing: 'elasticOut',
+                    animationDelay: function (idx) {
+                        return Math.random() * 200;
+                    }
+                }
+            ]
+        };
+
+        option && myChart.setOption(option);
+
+    </script>
+{% endblock body %}

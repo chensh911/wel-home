@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{#================================#}
+{% block title %}My Home :: Smart Home{% endblock title %}
+{% block home %}class="active"{% endblock home %}
+{% block body %}
+    <div class="w3layouts-glyphicon">
+        <div class="grid_3 grid_4">
+            <h2 class="w3ls_head">My Home</h2>
+            <div class="icon-box col-md-3 col-sm-5">
+                <a style="color: black" class="agile-icon" href="{% url 'data:home' %}">
+                    <i class="fa fa-asl-interpreting" aria-hidden="true"></i> Update data</a>
+            </div>
+            <div class="bs-glyphicons">
+                <ul class="bs-glyphicons-list">
+                    <form name="lighton" method="post" class="icon-box col-md-3 col-sm-4">
+                        {% csrf_token %}
+                        <input type="text" name="type" value="light" hidden>
+                        <input type="range" min="0" max="255" name="data" value="1">
+                        <a style="color: black" class="agile-icon" href="javascript:lighton.submit();"><i
+                                class="fa fa-asl-interpreting" aria-hidden="true"></i> Change Lightness </a>
+                    </form>
+                    <form name="dooron" method="post" class="icon-box col-md-3 col-sm-4">
+                        {% csrf_token %}
+                        <input type="text" name="type" value="door" hidden>
+                        <input type="text" name="data" value="1" hidden>
+                        <a style="color: black" class="agile-icon" href="javascript:dooron.submit();"><i
+                                class="fa fa-asl-interpreting" aria-hidden="true"></i> Open Door </a>
+                    </form>
+                    <form name="dooroff" method="post" class="icon-box col-md-3 col-sm-4">
+                        {% csrf_token %}
+                        <input type="text" name="type" value="door" hidden>
+                        <input type="text" name="data" value="0" hidden>
+                        <a style="color: black" class="agile-icon" href="javascript:dooroff.submit();"><i
+                                class="fa fa-asl-interpreting" aria-hidden="true"></i> Close Door </a>
+                    </form>
+                    <form name="homeon" method="post" class="icon-box col-md-3 col-sm-4">
+                        {% csrf_token %}
+                        <input type="text" name="type" value="home" hidden>
+                        <input type="text" name="data" value="1" hidden>
+                        <a style="color: black" class="agile-icon" href="javascript:homeon.submit();"><i
+                                class="fa fa-asl-interpreting" aria-hidden="true"></i> At Home </a>
+                    </form>
+                    <form name="homeoff" method="post" class="icon-box col-md-3 col-sm-4">
+                        {% csrf_token %}
+                        <input type="text" name="type" value="home" hidden>
+                        <input type="text" name="data" value="0" hidden>
+                        <a style="color: black" class="agile-icon" href="javascript:homeoff.submit();"><i
+                                class="fa fa-asl-interpreting" aria-hidden="true"></i> Not At Home </a>
+                    </form>
+                </ul>
+            </div>
+            <br>
+
+            <h3 class="page-header icon-subheading" style="visibility: hidden">Data</h3>
+            <div class="bs-glyphicons">
+                <ul class="bs-glyphicons-list">
+                    <li><span class="glyphicon glyphicon-tint" aria-hidden="true"></span>
+                        <h4 class="glyphicon-class">Humidity</h4>
+                        <h2 class="glyphicon-class">{{ home.humidity }}</h2></li>
+                    <li><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
+                        <h4 class="glyphicon-class">Temperature</h4>
+                        <h2 class="glyphicon-class">{{ home.temperature }}</h2></li>
+                    <li><span class="glyphicon glyphicon-road" aria-hidden="true"></span>
+                        <h4 class="glyphicon-class">Distance</h4>
+                        <h2 class="glyphicon-class">{{ home.distance }}</h2></li>
+                    <li><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span>
+                        <h4 class="glyphicon-class">Door Open</h4>
+                        <h2 class="glyphicon-class">{% if home.door == 1 %}Yes{% else %}No{% endif %}</h2></li>
+                    <li><span class="glyphicon glyphicon-grain" aria-hidden="true"></span>
+                        <h4 class="glyphicon-class">Rain</h4>
+                        <h2 class="glyphicon-class">{% if home.rain == 1 %}Yes{% else %}No{% endif %}</h2></li>
+                    <li><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+                        <h4 class="glyphicon-class">Window Open</h4>
+                        <h2 class="glyphicon-class">{% if home.window == 1 %}Yes{% else %}No{% endif %}</h2></li>
+                    <li><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        <h4 class="glyphicon-class">Lightness</h4>
+                        <h2 class="glyphicon-class">{{ home.lightness }}</h2></li>
+                </ul>
+            </div>
+
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+{% endblock body %}
